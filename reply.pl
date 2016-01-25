@@ -70,37 +70,55 @@ Replying to Twitter:
 
 while(1){
 
-    #Grab earliest tweet with no reply and a random reply.
-    my $sth_get_tweet = $dbh->prepare("SELECT TweetID, UserName FROM `tweets` WHERE Replied=0 ORDER BY TweetDT ASC LIMIT 1;");
-    my $sth_get_reply = $dbh->prepare("SELECT ReplyText FROM `replies` ORDER BY RAND() LIMIT 1;");
-       $sth_get_tweet->execute();
-       $sth_get_reply->execute();
-    my $ref_get_tweet = $sth_get_tweet->fetchrow_hashref();
-    my $ref_get_reply = $sth_get_reply->fetchrow_hashref();
-    my $twid  = $ref_get_tweet->{'TweetID'};
-    my $uname = $ref_get_tweet->{'UserName'};
-    my $reply = $ref_get_reply->{'ReplyText'};
-    $sth_get_tweet->finish();
-    $sth_get_reply->finish();
+    #Send reply 60% of time, and a tweet with no handle 40% of time.
+    if(rand()<0.60){
 
-    #Continue if there was actually such a tweet in the database
-    if($twid){
+        #Grab earliest tweet with no reply and a random reply.
+        my $sth_get_tweet = $dbh->prepare("SELECT TweetID, UserName FROM `tweets` WHERE Replied=0 ORDER BY TweetDT ASC LIMIT 1;");
+        my $sth_get_reply = $dbh->prepare("SELECT ReplyText FROM `replies` ORDER BY RAND() LIMIT 1;");
+           $sth_get_tweet->execute();
+           $sth_get_reply->execute();
+        my $ref_get_tweet = $sth_get_tweet->fetchrow_hashref();
+        my $ref_get_reply = $sth_get_reply->fetchrow_hashref();
+        my $twid  = $ref_get_tweet->{'TweetID'};
+        my $uname = $ref_get_tweet->{'UserName'};
+        my $reply = $ref_get_reply->{'ReplyText'};
+        $sth_get_tweet->finish();
+        $sth_get_reply->finish();
 
-        #Prepare the tweet
-        my $tweet = "\@$uname$reply";
-        print "$tweet\n";
+        #Continue if there was actually such a tweet in the database
+        if($twid){
 
-        #Send the tweet
-        $nt->update({ status => $tweet, in_reply_to_status_id => $twid });
+            #Prepare the tweet
+            my $tweet = "\@$uname$reply";
+            print "$tweet\n";
 
-        #Mark the grabbed tweet as replied.
-        $dbh->do("UPDATE `tweets` SET `Replied`=1 WHERE TweetID=?", undef, $twid);
-                
+            #Send the tweet
+            $nt->update({ status => $tweet, in_reply_to_status_id => $twid });
+
+            #Mark the grabbed tweet as replied.
+            $dbh->do("UPDATE `tweets` SET `Replied`=1 WHERE TweetID=?", undef, $twid);
+                    
+        }else{
+            print "no more tweets :(\n";
+        }
+    
     }else{
-        print "no more tweets :(\n";
+
+        #Grab a random nohandle tweet.
+        my $sth_get_nohandle = $dbh->prepare("SELECT NoHandleText FROM `nohandletweets` ORDER BY RAND() LIMIT 1;");
+           $sth_get_nohandle->execute();
+        my $ref_get_nohandle = $sth_get_nohandle->fetchrow_hashref();
+        my $nohandle = $ref_get_reply->{'NoHandleText'};
+        $sth_get_nohandle->finish();
+
+        #Send it
+        $nt->update({ status => $nohandle });
+                
     }
-    #Don't break limits, do one in a minute.
-    sleep(60);
+
+    #Don't break limits, do one in two minutes.
+    sleep(120);
 }
 
 
