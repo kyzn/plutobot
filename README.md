@@ -1,13 +1,12 @@
 Pluto Bot
 ===============
 
-It's a simple Twitter bot that searches Twitter for "has heart" tweets, and replies with a "reminder that Pluto also has heart". In order to avoid being offensive to medical tweets, I have used following line as search query:
-```
-"has heart" -surgery -condition -conditions -attack -disease -problem -problems -congestion -situation -issues
-```
-That is, it will not reply to any tweets that contain at least one of the words that begin with a minus sign. Actually, you cannot do that on Twitter stream, so I will search for "has heart" and do some post-processing to simulate that behaviour.
+It's a simple Twitter bot that searches Twitter for tweets with "has heart", and replies with a "reminder that Pluto also has heart". It also posts fun facts or puns about Pluto once in a while.
 
-This script is heavily based on one of my previous projects, twitter-voting. You can find that one on GitHub too.
+
+In order to avoid being offensive to medical condition tweets, regular expressions are utilized to not to reply to tweets that has some special keywords.
+
+This script is heavily based on one of my previous projects, [twitter-voting](https://github.com/kyzn/twitter-voting).
 
 #Requirements
 
@@ -21,15 +20,15 @@ sudo cpanm Net::SSLeay Net::OAuth AnyEvent::Twitter::Stream DBD::mysql DateTime:
 ```
 
 #Setup
-1. You have to setup your database. Run setup.sql on your MySQL.
-2. Rename TwitAuth_sample.pm as TwitAuth.pm
+1. Run setup.sql on your MySQL
+2. Rename PlutoAuth_sample.pm as PlutoAuth.pm
 3. Write your db credentials into TwitAuth.pm
-4. You need to create a Twitter application at [Twitter Apps](http://apps.twitter.com).
-5. Copy Twitter tokens to TwitAuth.pm as well.
+4. Create a Twitter application [here](http://apps.twitter.com).
+5. Copy your Twitter tokens to PlutoAuth.pm as well.
 
 
 #How to Use
-The easiest way to run it would be to open tmux in a cloud machine. In one window, run stream.pl, and reply.pl in another. That's pretty much it.
+The easiest way to run would be to open tmux in a cloud machine. Run stream.pl in one windows, and reply.pl in another.
 
 
 ##Known Issues
