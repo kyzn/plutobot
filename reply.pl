@@ -70,8 +70,8 @@ Replying to Twitter:
 
 while(1){
 
-    #Send reply 60% of time, and a tweet with no handle 40% of time.
-    if(rand()<0.60){
+    #Send reply 50% of time, and a tweet with no handle rest of time.
+    if(rand()<0.50){
 
         #Grab earliest tweet with no reply and a random reply.
         my $sth_get_tweet = $dbh->prepare("SELECT TweetID, UserName FROM `tweets` WHERE Replied=0 ORDER BY TweetDT ASC LIMIT 1;");
@@ -109,16 +109,22 @@ while(1){
         my $sth_get_nohandle = $dbh->prepare("SELECT NoHandleText FROM `nohandletweets` ORDER BY RAND() LIMIT 1;");
            $sth_get_nohandle->execute();
         my $ref_get_nohandle = $sth_get_nohandle->fetchrow_hashref();
-        my $nohandle = $ref_get_reply->{'NoHandleText'};
+        my $nohandle = $ref_get_nohandle->{'NoHandleText'};
         $sth_get_nohandle->finish();
 
+        #Prepare the tweet
+        my $funfact= random(1000)*1000+random(1000)
+        my $tweet = "Pluto funfact $funfact: $nohandle";
+
         #Send it
-        $nt->update({ status => $nohandle });
+
+        print "$tweet\n";
+        $nt->update({ status => $tweet });
                 
     }
 
-    #Don't break limits, do one in two minutes.
-    sleep(120);
+    #Don't break limits, do one in 15 minutes.
+    sleep(15*60);
 }
 
 

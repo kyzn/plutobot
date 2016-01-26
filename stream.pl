@@ -136,8 +136,8 @@ sub incoming{
     }
     return if ($sensitive);
 
-    #stop if the original content do not have "heart"
-    return unless (lc($tweet->{text})=~/heart/);
+    #stop if the original content do not have "has heart"
+    return unless (lc($tweet->{text})=~/has.{0,5}heart/);
 
     #insert tweet into db
     $dbh->do("INSERT INTO tweets (TweetID,TweetText,TweetDT,UserID,UserName,Replied) 
