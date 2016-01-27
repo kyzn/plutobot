@@ -113,7 +113,7 @@ while(1){
         $sth_get_nohandle->finish();
 
         #Prepare the tweet
-        my $funfact= rand(1000)*1000+rand(1000);
+        my $funfact= int(rand(1000))*1000+int(rand(1000));
         my $tweet = "Pluto funfact $funfact: $nohandle";
 
         #Send it
