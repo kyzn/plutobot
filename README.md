@@ -1,8 +1,10 @@
+#DISCLAIMER
+What this software does might be against Twitter Terms and Rules, so you might want to make sure you are obeying Twitter rules. Clearly, it's your own responsibility to not to do something 'bad'.
+
+
 Pluto Bot
 ===============
 
-#DISCLAIMER
-What this software does might be against Twitter Terms and Rules, so you might want to make sure you are obeying Twitter rules. Clearly, it's your own responsibility to not to do something 'bad'.
 
 It's a simple Twitter bot that searches Twitter for tweets with "has heart", and replies with a "reminder that Pluto also has heart". It also posts fun facts or puns about Pluto once in a while.
 
